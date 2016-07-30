@@ -1,0 +1,65 @@
+DESCRIPTION
+        $script - A tool that extracts and sorts netlist capacitance from an input parasitics(.SPF) file format.
+
+        Default output filename: "<SPF file>.cap.log"
+
+USAGE
+        $script <.spf file> [option]
+
+OPTION
+        Required:
+        <.spf file>			Input .SPF parasitics file
+					Please use -rctype cc during LPE extraction
+
+        Optional:
+        -sort [value|node1|node2] 	Will sort according to category
+	-above [value]			filters in data above this cap value
+	-below [value]			filters in data below this cap value
+	-include [string]		filters in data containing this string, accepts white-space separated array
+	-exclude [string]		filters out data containing this string, accepts white-space separated array
+	-list [list file]		filters in data contained in the list file 
+        -aggregate			report total capacitance for each net names
+        -nosupply			remove supply nets from capacitance list
+        -noaggsupply			remove supply reference nets from total aggregate counts
+	-o [file name]			desired output file name
+        -h|help                         display help message
+
+EXAMPLES
+        1. %> sort_caps.pl ebr_RCmax_cc_85C.spf -aggregate
+                -This generate list of nets together with related nets and values
+
+        2. %> sort_caps.pl ebr_RCmax_cc_85C.spf -aggregate -nosupply
+                -Same as the first example but all supply nets were removed from capacitance list
+
+        3. %> sort_caps.pl ebr_RCmax_cc_85C.spf -aggregate -noaggsupply
+                -Same as the first example but all supply nets were removed from the total aggregate counts
+
+        4. %> sort_caps.pl ebr_RCmax_cc_85C.spf -aggregate -above 10e-15
+                -Same as the first example but all below 10e-15 aggregate values will not be counted in the list
+
+        5. %> sort_caps.pl ebr_RCmax_cc_85C.spf -sort value
+                -This will extract netlist capacitance and will sort capacitance value in decending order
+
+        6. %> sort_caps.pl ebr_RCmax_cc_85C.spf -sort value -above 0.5e-15
+                -This will exclude those with caps value below 0.5e-15
+
+        7. %> sort_caps.pl ebr_RCmax_cc_85C.spf -sort value -exclude vcc
+                -This will exclude those with "vcc" node name
+
+        8. %> sort_caps.pl ebr_RCmax_cc_85C.spf -sort value -exclude "vcc vss" -include "por cib"
+                -This will exclude those with "vcc"  and "vss" node names except for those with "por" and "cib" node names
+
+
+list file example:
+-------------------
+vcc
+vss
+gnd
+-------------------
+
+SCOPE AND LIMITATIONS
+        1. Supports capacitance extraction for .SPF file only.
+
+REVISION HISTORY:
+        1. 12/01/15[rrita] -initial version
+--------------------------------------------------------------------------------------------------------
